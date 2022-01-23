@@ -1,6 +1,6 @@
 package com.aditya.BinarySearch;
 
-public class RotatedBinarySearch {
+public class  RotatedBinarySearch {
     public static void main(String[] args){
         int[] arr = {1,3,5};
         int target = 5;
