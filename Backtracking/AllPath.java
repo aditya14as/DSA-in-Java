@@ -66,8 +66,6 @@ public class AllPath {
         path[r][c] = step;
 
         arr[r][c] = false;
-
-
         if(c< arr[0].length-1){
             ans.addAll(allpathPrint(p + "R",arr, r , c+1,path,step+1));
         }
