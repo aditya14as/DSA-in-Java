@@ -3,15 +3,18 @@ package com.aditya.Recursion.Practice;
 public class Lexicographic {
     public static void main(String[] args) {
         String str = "abc";
-        subset("",str);
+        set(str,str.length(),-1,"");
     }
-    static void subset(String p, String up){
-        if(up.isEmpty()){
-            System.out.println(p);
+    static void set(String up,int n,int index,String p){
+        if(index==n){
             return;
         }
-        char ch = up.charAt(0);
-        subset(p+ch,up.substring(1));
-        subset(p,up.substring(1));
+        System.out.println(p);
+        for (int i = index+1; i < n; i++) {
+            p= p+up.charAt(i);
+            set(up,n,i,p);
+            p=p.substring(0,p.length()-1);
+        }
+
     }
 }

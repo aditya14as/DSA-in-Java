@@ -16,7 +16,7 @@ public class NQueensAlter {
         }
         int ans =0;
         for(int cols = 0; cols<board.length; cols++){
-            if(board[row][cols]==false && col[cols]==false && nd[row+cols]==false && rd[row-                                                         cols+board.length-1]==false){
+            if(board[row][cols]==false && col[cols]==false && nd[row+cols]==false && rd[row-cols+board.length-1]==false){
                 board[row][cols]=true;
                 col[cols]= true;
                 nd[row+cols]= true;
