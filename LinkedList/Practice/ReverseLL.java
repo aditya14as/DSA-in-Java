@@ -82,13 +82,47 @@ public class ReverseLL {
 
 
     }
+    public Node reverseBetween(int left, int right) {
+        if(left==right){
+            return head;
+        }
+        Node prev = null;
+        Node current = head;
+        Node after = head.next;
+        //Traverse until current reaches to left
+        for(int i=0 ; i<left-1 && current != null; i++){
+            prev = current;
+            current = current.next;
+            if(after!=null){
+                after = after.next;
+            }
+        }
+
+        Node last = prev; //prev node will eventually turned out to be last so we have to store it somewhere
+        Node newE = current;
+        for(int i=0 ;  i<right-left+1 && current!=null; i++){
+            current.next = prev;
+            prev = current;
+            current = after;
+            if(after!=null){
+                after = after.next;
+            }
+        }
+        if(last!=null){
+            last.next = prev;
+        }else{
+            head = prev;
+        }
+        newE.next = current;
+        return head;
+    }
     public static void main(String[] args){
         ReverseLL list = new ReverseLL();
         for (int i = 7; i > 0; i--) {
             list.insertLast(i*2);
         }
         list.display();
-        list.inplaceReverse();
+        list.reverseBetween(2,4);
         System.out.println();
         list.display();
     }
