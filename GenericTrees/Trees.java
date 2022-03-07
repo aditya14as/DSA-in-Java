@@ -23,7 +23,7 @@ public class Trees {
     }
 
     public static void main(String[] args) {
-        int[] arr = {10,20,50,-1,60,-1,-1,30,70,-1,80,110,-1,120,-1,-1,90,-1,-1,40,100,-1,-1,-1};
+        int[] arr = {10,20,50,-1,60,-1,-1,30,70,-1,80,110,-1,120,-1,-1,90,-1,-1,40,100,-1,200,-1,-1,-1};
         Stack<Node> st = new Stack<>();
         Node root=null;
         for (int i = 0; i < arr.length; i++) {
@@ -56,7 +56,8 @@ public class Trees {
 //        System.out.println(isAvailable(root,12));
 //        System.out.println(nodeToRootPath(root,100));
 //        System.out.println(lowestCommonAncestor(root,110,70));
-        System.out.println(distanceBWnodes(root,90,20));
+//        System.out.println(distanceBWnodes(root,90,20));
+        System.out.println(isSymmetric(root));
     }
 
     public static void display(Node node){
@@ -284,5 +285,54 @@ public class Trees {
             j--;
         }
         return i+j+2;
+    }
+    public static boolean isSimilar(Node a, Node b){
+        if(a.child.size()!=b.child.size()){
+            return false;
+        }
+        for(int i=0; i<a.child.size(); i++){
+            Node ac = a.child.get(i);
+            Node bc = a.child.get(i);
+            if(!isSimilar(ac,bc)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isMirror(Node a , Node b){
+        if(a.child.size()!=b.child.size()){
+            return false;
+        }
+        for (int i = 0; i < a.child.size(); i++) {
+            Node ac = a.child.get(i);
+            Node bc = b.child.get(b.child.size()-1-i);
+            if(!isMirror(ac,bc)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isSymmetric(Node root){
+        for (int i = 0; i < root.child.size()/2; i++) {
+            Node a = root.child.get(i);
+            Node b = root.child.get(root.child.size()-1-i);
+            if(!symmetricHelper(a,b)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean symmetricHelper(Node a, Node b){
+        if(a.child.size()!=b.child.size()){
+            return false;
+        }
+        for (int i = 0; i <a.child.size() ; i++) {
+            Node ac = a.child.get(i);
+            Node bc = b.child.get(b.child.size()-1-i);
+            if(!symmetricHelper(ac,bc)){
+                return false;
+            }
+        }
+        return true;
     }
 }
