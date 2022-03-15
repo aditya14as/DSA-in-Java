@@ -1,5 +1,7 @@
 package com.aditya.BinaryTrees;
 
+import com.aditya.BinarySearchTrees.BST;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
@@ -386,4 +388,42 @@ public class BinaryTree {
         printKlevelDown(root.left,k-1,blocker);
         printKlevelDown(root.right,k-1,blocker);
     }
+    public static class BSTPair{
+        int min;
+        int max;
+        boolean isBST;
+        Node largestBSTroot;
+        int largestBSTsize;
+    }
+    // The return value of BSTPair contains minimum value, maximum value, is Binary tree BST or not,root of largest BST
+    // size of largest BST(Remember: if whole tree is not BST then these two value will return root and size of BST formed
+    // by largest sub tree
+    public static BSTPair isBst(Node root){
+        if(root==null){
+            BSTPair bp = new BSTPair();
+            bp.min = Integer.MIN_VALUE;
+            bp.max = Integer.MAX_VALUE;
+            bp.isBST = true;
+            bp.largestBSTroot = null;
+            bp.largestBSTsize= 0;
+        }
+        BSTPair lp = isBst(root.left);
+        BSTPair rp = isBst(root.right);
+        BSTPair mp = new BSTPair();
+        mp.max = Math.max(root.data,Math.max(lp.max,rp.max));
+        mp.min = Math.min(root.data,Math.min(lp.min,rp.min));
+        mp.isBST = lp.isBST && rp.isBST && (root.data>lp.max && root.data<rp.min);
+        if(mp.isBST){
+            mp.largestBSTroot = root;
+            mp.largestBSTsize = lp.largestBSTsize+rp.largestBSTsize + 1;
+        }else if(lp.largestBSTsize>rp.largestBSTsize){
+            mp.largestBSTsize = lp.largestBSTsize;
+            mp.largestBSTroot = lp.largestBSTroot;
+        }else{
+            mp.largestBSTsize = rp.largestBSTsize;
+            mp.largestBSTroot = rp.largestBSTroot;
+        }
+        return mp;
+    }
+
 }

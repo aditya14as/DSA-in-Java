@@ -124,7 +124,7 @@ public class Trees {
         Queue<Node> p = new ArrayDeque<>();
         Queue<Node> c = new ArrayDeque<>();
         p.add(node);
-        while(!p.isEmpty() || !c.isEmpty()){
+        while(!p.isEmpty()){
             node = p.remove();
             System.out.print(node.data+" ");
             for (int i = 0; i < node.child.size(); i++) {
