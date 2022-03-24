@@ -1,5 +1,6 @@
 package com.aditya.Graph;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
@@ -56,12 +57,21 @@ public class GraphMain {
         boolean[] visited = new boolean[vces];
 
 //        System.out.println(hasPath(graph,0,6,visited));
-        printAllPath(graph,0,6,visited,"0",2,0,40); //criteria is for finding ceil and floor
-        System.out.println("Max path: "+maxPath+"@"+maxPathW);
-        System.out.println("Min path: "+ minPath+"@"+minPathW);
-        System.out.println("Ceil path: "+ceilPath+"@"+ceilPathW);
-        System.out.println("Floor path: "+floorPath+"@"+floorPathW);
-        System.out.println("Kth largest path: "+pq.peek().path+"@"+pq.peek().wsf);
+//        printAllPath(graph,0,6,visited,"0",2,0,40); //criteria is for finding ceil and floor
+//        System.out.println("Max path: "+maxPath+"@"+maxPathW);
+//        System.out.println("Min path: "+ minPath+"@"+minPathW);
+//        System.out.println("Ceil path: "+ceilPath+"@"+ceilPathW);
+//        System.out.println("Floor path: "+floorPath+"@"+floorPathW);
+//        System.out.println("Kth largest path: "+pq.peek().path+"@"+pq.peek().wsf);
+        ArrayList<ArrayList<Integer>> list = new ArrayList<>();
+        for (int i = 0; i < vces; i++) {
+            if(visited[i]==false){
+                ArrayList<Integer> comp = new ArrayList<>();
+                getConnectedComponent(graph,i,visited,comp);
+                list.add(comp);
+            }
+        }
+        System.out.println(list);
     }
     public static boolean hasPath(ArrayList<Edge>[] graph, int src, int dest,boolean[] visited){
         if(src==dest){
@@ -118,11 +128,27 @@ public class GraphMain {
             return;
         }
         visited[src] =true;
-        for(Edge edge : graph[src]){
-            if(!visited[edge.nbr]){
-                printAllPath(graph,edge.nbr,dest,visited,path+edge.nbr,k,wsf+edge.wt,criteria);
+        for(int i = 0; i<graph[src].size(); i++){
+            if(!visited[graph[src].get(i).nbr]){
+                printAllPath(graph,graph[src].get(i).nbr,dest,visited,path+graph[src].get(i).nbr,k,wsf+graph[src].get(i).wt,criteria);
             }
         }
         visited[src] = false;
     }
+
+    public static void getConnectedComponent(ArrayList<Edge>[] graph,int src,boolean[] visited,ArrayList<Integer> comp){
+        visited[src] = true;
+        comp.add(src);
+        for (int i = 0; i < graph[src].size(); i++) {
+            if(visited[graph[src].get(i).nbr]==false){
+                getConnectedComponent(graph,graph[src].get(i).nbr,visited,comp);
+            }
+        }
+
+        // Similary we can solve this for graph connected or not?
+        // if this funtion yeilds more than one arraylist then we can conclude that
+        // graph has two parts which means graph is not connected
+    }
+
+
 }
