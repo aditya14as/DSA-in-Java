@@ -86,7 +86,16 @@ public class GraphMain {
 //        }
 //        System.out.println(list);
 //        hamiltonianPathAndCycle(graph,0,visited,"0",0);
-        bfsTraversal(graph,0,visited);
+//        bfsTraversal(graph,0,visited);
+        for (int i = 0; i < vces; i++) {
+            if(visited[i]==false){
+                if(isCyclicUsingBFS(graph,i,"i",visited)){
+                    System.out.println("Graph is Cyclic");
+                    return;
+                }
+            }
+        }
+        System.out.println("Graph is not Cyclic");
     }
     public static boolean hasPath(ArrayList<Edge>[] graph, int src, int dest,boolean[] visited){
         if(src==dest){
@@ -211,5 +220,23 @@ public class GraphMain {
                 }
             }
         }
+    }
+    public static boolean isCyclicUsingBFS(ArrayList<Edge>[] graph,int src,String psf, boolean[] visited){
+        ArrayDeque<QPair> q = new ArrayDeque<>();
+        q.add(new QPair(src,src+""));
+        while(q.size()>0){
+            QPair pair = q.remove();
+            if(visited[pair.value]==true){
+                return true;
+            }
+                visited[pair.value]=true;
+                for (int i = 0; i < graph[pair.value].size(); i++) {
+                   if(visited[graph[pair.value].get(i).nbr]==false){
+                       q.add(new QPair(graph[pair.value].get(i).nbr,pair.psf+graph[pair.value].get(i).nbr));
+                   }
+                }
+
+        }
+        return false;
     }
 }
