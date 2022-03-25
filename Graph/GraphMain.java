@@ -1,9 +1,7 @@
 package com.aditya.Graph;
 
 import java.lang.reflect.Array;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class GraphMain {
     public static class Edge{
@@ -27,14 +25,7 @@ public class GraphMain {
             return this.wsf - o.wsf;
         }
     }
-    public static class QPair{
-        int value;
-        String psf;
-        QPair(int value,String psf){
-            this.value = value;
-            this.psf = psf;
-        }
-    }
+
     public static void main(String[] args){
         int vces = 7; // 0,1,2,3,4,5,6
         ArrayList<Edge>[] graph = new ArrayList[vces];  // int[] arr = new int[7];
@@ -76,6 +67,8 @@ public class GraphMain {
 //        System.out.println("Ceil path: "+ceilPath+"@"+ceilPathW);
 //        System.out.println("Floor path: "+floorPath+"@"+floorPathW);
 //        System.out.println("Kth largest path: "+pq.peek().path+"@"+pq.peek().wsf);
+
+
 //        ArrayList<ArrayList<Integer>> list = new ArrayList<>();
 //        for (int i = 0; i < vces; i++) {
 //            if(visited[i]==false){
@@ -85,17 +78,53 @@ public class GraphMain {
 //            }
 //        }
 //        System.out.println(list);
+
+
 //        hamiltonianPathAndCycle(graph,0,visited,"0",0);
+
+
 //        bfsTraversal(graph,0,visited);
-        for (int i = 0; i < vces; i++) {
-            if(visited[i]==false){
-                if(isCyclicUsingBFS(graph,i,"i",visited)){
-                    System.out.println("Graph is Cyclic");
-                    return;
-                }
-            }
-        }
-        System.out.println("Graph is not Cyclic");
+
+
+//        for (int i = 0; i < vces; i++) {
+//            if(visited[i]==false){
+//                if(isCyclicUsingBFS(graph,i,"i",visited)){
+//                    System.out.println("Graph is Cyclic");
+//                    return;
+//                }
+//            }
+//        }
+//        System.out.println("Graph is not Cyclic");
+
+
+//        int[] visit = new int[vces];
+//        Arrays.fill(visit,-1);
+//        for (int i = 0; i < vces; i++) {
+//            if(visit[i] == -1){
+//                if(isGraphBipartite(graph,i,i+"",visit)==false){
+//                    System.out.println(false);
+//                    return;
+//                }
+//            }
+//        }
+//        System.out.println(true);
+
+
+//        dikshtraAlgorithm(graph,0,6,visited,0+"");
+
+//        primsAlgorithm(graph,0,visited);
+
+//        iterativeDFS(graph,0,visited);
+
+//        Stack<Integer> st = new Stack<>();
+//        for (int i = 0; i < vces; i++) {
+//            if(visited[i]==false){
+//                topologicalSort(graph,i,visited,st);
+//            }
+//        }
+//        while(st.empty()==false){
+//            System.out.println(st.pop());
+//        }
     }
     public static boolean hasPath(ArrayList<Edge>[] graph, int src, int dest,boolean[] visited){
         if(src==dest){
@@ -204,6 +233,15 @@ public class GraphMain {
         visited[src]=false;
 
     }
+
+    public static class QPair{
+        int value;
+        String psf;
+        QPair(int value,String psf){
+            this.value = value;
+            this.psf = psf;
+        }
+    }
     public static void bfsTraversal(ArrayList<Edge>[] graph,int src,boolean[] visited){
 
         ArrayDeque<QPair> q = new ArrayDeque<>();
@@ -221,6 +259,7 @@ public class GraphMain {
             }
         }
     }
+
     public static boolean isCyclicUsingBFS(ArrayList<Edge>[] graph,int src,String psf, boolean[] visited){
         ArrayDeque<QPair> q = new ArrayDeque<>();
         q.add(new QPair(src,src+""));
@@ -238,5 +277,160 @@ public class GraphMain {
 
         }
         return false;
+    }
+
+    public static class BipartitePair{
+        int val;
+        String psf;
+        int level;
+        BipartitePair(int val,String psf,int level){
+            this.val = val;
+            this.psf = psf;
+            this.level = level;
+        }
+    }
+    public static boolean isGraphBipartite(ArrayList<Edge>[] graph,int src,String psf,int[] visited){
+        // Is graph bipartite? Which means it's possible to divide vertices into two mutually exclusive & exhaustive subsets
+        // such that all edges are across sets. All Acyclic graph, and cycle with even edges are bipartite
+        // But cycle with odd edges are not bipartite because when we traverse level order to add into two mutually subsets
+        // it will try to add into both the subsets because of traversing 2 times at different level
+        ArrayDeque<BipartitePair> q = new ArrayDeque<>();
+        q.add(new BipartitePair(src,src+"",0));
+        while(!q.isEmpty()){
+            // Operation of Remove,Marked, Worked and Add all neighbour
+            BipartitePair pair = q.remove(); // Remove
+            if(visited[pair.val] == -1){
+                visited[pair.val]=pair.level; // Marked visited
+            }else{
+                if(visited[pair.val] != pair.level){
+                    return false;
+                }
+            }
+            for (int i = 0; i < graph[pair.val].size(); i++) {
+                if(visited[graph[pair.val].get(i).nbr] == -1){ // Add all children
+                    q.add(new BipartitePair(graph[pair.val].get(i).nbr, pair.psf+graph[pair.val].get(i).nbr,pair.level+1));
+                }
+            }
+        }
+        return true;
+
+        // Spread infection is the application of this.
+        // Q. If source is infected with virus at t=1 then their neighbour is infected with t=t+1 then you have to find out that
+        // how much total time to infect all the person?
+        // Solution:- Time at which a particular person is infected is equal to the minimum no of level of BFS
+        // Then after traversing last person the level of that person will be total time
+    }
+
+    public static class DPair implements Comparable<DPair>{
+        int val;
+        String psf;
+        int wt;
+        DPair(int val,String psf,int wt){
+            this.val = val;
+            this.psf = psf;
+            this.wt = wt;
+        }
+        public int compareTo(DPair o){
+            return this.wt-o.wt;
+        }
+    }
+    public static void dikshtraAlgorithm(ArrayList<Edge>[] graph,int src,int dest,boolean[] visited,String psf){
+        //This algorithm is used where we have to find path in terms of weight(can be configured as max or min)
+        //Here, We created priority queue which compared pair and returns the pair with minimum weight
+        PriorityQueue<DPair> pq = new PriorityQueue<>();
+        pq.add(new DPair(src,src+"",0));
+        while(pq.size()>0){
+            DPair pair = pq.remove();
+            System.out.println(pair.psf+"@"+pair.wt);
+            if(pair.val==dest){
+                break;
+            }
+            if(visited[pair.val]==false){
+                visited[pair.val]=true;
+            }
+            for (int i = 0; i < graph[pair.val].size(); i++) {
+                if(visited[graph[pair.val].get(i).nbr]==false){
+                    pq.add(new DPair(graph[pair.val].get(i).nbr,pair.psf+graph[pair.val].get(i).nbr,pair.wt+graph[pair.val].get(i).wt));
+                }
+            }
+        }
+    }
+
+    public static class PPair implements Comparable<PPair>{
+        int val;
+        int adjVertices;
+        int wt;
+        PPair(int val,int adjVertices,int wt){
+            this.val = val;
+            this.adjVertices = adjVertices;
+            this.wt = wt;
+        }
+        public int compareTo(PPair o){
+            return this.wt-o.wt;
+        }
+    }
+    public static void primsAlgorithm(ArrayList<Edge>[] graph,int src,boolean[] visited){
+        //This algorithm is used for creating minimum spanning tree,(spanning means all vertex should be included)
+        // A spanning tree is a sub-graph of an undirected connected graph,
+        // which includes all the vertices of the graph with a minimum possible number of edges.
+        // If a vertex is missed, then it is not a spanning tree.
+        // It should be acyclic
+        // Application:- To find minimum length of wire to connect a lan,paths in the map etc
+        PriorityQueue<PPair> pq = new PriorityQueue<>();
+        pq.add(new PPair(src,-1,0));
+        while(pq.isEmpty()==false){
+            PPair pair = pq.remove();
+            if(visited[pair.val]==true){
+                continue;
+            }
+            visited[pair.val]=true;
+            if(pair.adjVertices != -1){  // It will not print first pair as it's the source
+                System.out.println(pair.val+"@"+pair.wt);
+            }
+            for (int i = 0; i < graph[pair.val].size(); i++) {
+                if(visited[graph[pair.val].get(i).nbr]==false){
+                    pq.add(new PPair(graph[pair.val].get(i).nbr,pair.val,graph[pair.val].get(i).wt));
+                }
+            }
+        }
+    }
+
+    public static void iterativeDFS(ArrayList<Edge>[] graph,int src,boolean[] visited){
+        //Iterative DFS is very helpful because in recursion creative more than 10k calls in java gives stackoverflow exception
+        //Recursive calls creates in call stack memory and call stack memory is very small
+        //In iterative DFS we just put a reference in call stack memory of stack class object and stack class object created in heap memory
+        // We know that there is no limitation of heap memory
+
+        //In interative BFS we create pair and puts it into queue, but in DFS when we replace queue with Stack then its call
+        // will be made like reverse eular path(i.e DFS traversal)
+        Stack<QPair> st = new Stack<>();
+        st.push(new QPair(src,src+""));
+        while(st.isEmpty()==false){
+            QPair pair = st.pop(); //Remove
+            if (visited[pair.value]==true){
+                continue;
+            }
+            visited[pair.value]=true; //Marked
+            System.out.println(pair.psf); //Worked
+            for (int i = 0; i < graph[pair.value].size(); i++) {
+                if(visited[graph[pair.value].get(i).nbr]==false){
+                    st.add(new QPair(graph[pair.value].get(i).nbr,pair.psf+graph[pair.value].get(i).nbr)); //Add
+                }
+            }
+        }
+    }
+
+    public static void topologicalSort(ArrayList<Edge>[] graph,int src,boolean[] visited,Stack<Integer> st){
+        //Topological Sort:- A permutation of vetices for a directed acyclic graph(Graph must be DAG) is called topoplogical sort if for all
+        //directed edges uv, u appears before v in the graph
+        // Topological Sorting has been proved to be very helpful in solving the Course Schedule problem.
+        //Other applications like manufacturing workflows, data serialization etc. where one process is dependent on the other
+        visited[src] = true;
+        for (int i = 0; i < graph[src].size(); i++) {
+            if (visited[graph[src].get(i).nbr]==false) {
+                topologicalSort(graph,graph[src].get(i).nbr,visited,st);
+            }
+        }
+        st.push(src);
     }
 }
