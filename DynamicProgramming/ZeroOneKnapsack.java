@@ -45,7 +45,6 @@ public class ZeroOneKnapsack {
             int a = solve(N,arr,sum);
             if(a==0){
                 return false;
-
             }
             else{
                 return true;
@@ -166,6 +165,87 @@ public class ZeroOneKnapsack {
 
         }
     }
+    // Type 5:- https://practice.geeksforgeeks.org/problems/minimum-sum-partition3317/1/#
+    class Solution5
+    {
 
+        public int minDifference(int arr[], int n) {
+            // Your code goes here
+
+            int sum = 0;
+            for(int i=0; i<arr.length; i++){
+                sum+= arr[i];
+            }
+
+            boolean[][] dp= new boolean[n+1][sum+1];
+
+            for (int i = 0; i <= n; i++) dp[i][0] = true;
+            for (int i = 1; i <= sum; i++) dp[0][i] = false;
+
+            for(int i = 1; i < n+1; i++){  //Filling the dp matrix using tabulation
+                                            //Just replace the n with i and sum with j from the recursive call as we have did earlier
+                                            // dp table is filled
+                for(int j = 1; j < sum+1; j++){
+                    if(arr[i-1] <= j)
+                        dp[i][j] = dp[i-1][j-arr[i-1]] || dp[i-1][j];
+                    else
+                        dp[i][j] = dp[i-1][j];
+                }
+            }
+            int diff = Integer.MAX_VALUE;
+            for (int j = sum / 2; j >= 0; j--) {
+                if (dp[n][j] == true) {
+                    diff = sum - 2 * j; //For S1-S2 should be minimum(S1>S2), S2=Sum of array -s1
+                                        // By using above all S1-S2 = Sum-2*S1. For positive value we can take only sum/2 to 0
+                                        //Minimum difference is The first value of j having True in dp matrix starting from sum/2 in last row
+                    break;
+                }
+            }
+            return diff;
+        }
+
+    }
+
+    // Type 6:- https://leetcode.com/problems/target-sum/
+    // This is also the problem of count the number of subset with a given difference
+    //No of subset so that S1-S2 ==d  -----eqn1
+    // S1+S2 = sum of array ------eqn2
+    // using eqn 1 and 2 we get S1 = (d+Sum)/2
+    // if d+sum is odd then return 0 because in this case s1 will be in fraction which is not possible by any means
+    // this leetcode problem is same just distroted a little bit.
+    // We can take all possible S1 with positive sign and S2 with negative sign
+    class Solution6 {
+        public int findTargetSumWays(int[] nums, int target) {
+            int sum =0;
+            for(int i=0; i<nums.length; i++){
+                sum+=nums[i];
+            }
+            int s= (sum+target)/2;
+            if(sum+target<0 || (sum+target)%2 ==1) return 0; //If sum+target is odd then return 0 because in this case s is in fraction
+
+            int[][] dp = new int[nums.length+1][s+1];
+            for(int i=0; i<dp.length; i++){
+                Arrays.fill(dp[i],-1);
+            }
+            return solve(nums,s,nums.length,dp);
+        }
+
+        public int solve(int[] arr, int sum,int n,int[][] dp){
+            if(n==0 && sum==0){
+                return 1;
+            }
+            if(n==0){
+                return 0;
+            }
+            if(dp[n][sum] != -1){
+                return dp[n][sum];
+            }
+            if(arr[n-1]>sum){
+                return dp[n][sum] = solve(arr,sum,n-1, dp);
+            }else{
+                return dp[n][sum] = solve(arr,sum,n-1,dp) + solve(arr,sum-arr[n-1],n-1,dp);
+            }
+        }
+    }
 
 }
