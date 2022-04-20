@@ -166,6 +166,7 @@ public class ZeroOneKnapsack {
         }
     }
     // Type 5:- https://practice.geeksforgeeks.org/problems/minimum-sum-partition3317/1/#
+    // Revise and write its recursive approach as well
     class Solution5
     {
 
